@@ -4,34 +4,68 @@ from wrapper import LoggerWrapper
 
 class TestLoggerWrapper(unittest.TestCase):
 
-    def setUp(self):
-        self.lw = LoggerWrapper(
-                    'test_logger',
-                    'config.json',
-                    'C:/io/io.log'
-                )
+
+    def test_valid_args(self):
+        args = (
+            'my_logger',
+            'logger_config.json',
+            'C:/tmp/log.log',
+            'localhost',
+            'debug',
+            'debug',
+            'debug'
+        )
+        self.assertTrue(LoggerWrapper(*args))
+
+    def test_invalid_name_type(self):
+        args = (
+            101,
+            'logger_config.json',
+            'C:/tmp/log.log',
+            'localhost',
+        )
+        with self.assertRaises(AssertionError):
+            LoggerWrapper(*args)
 
     def test_invalid_logging_level(self):
-        with self.assertRaises(AttributeError):
-            self.lw.logger.invalid('This a is debug message.')
+        args = (
+            'my_logger',
+            'logger_config.json',
+            'C:/tmp/log.log',
+            'localhost',
+            'no_such',
+        )
+        with self.assertRaises(AssertionError):
+            LoggerWrapper(*args)
 
-    def test_debug_message(self):
-        self.lw.logger.debug('This is a debug message.')
+    def test_logging_level_assignment(self):
 
-    def test_info_message(self):
-        self.lw.logger.info('This is an info message.')
+        '''
+        Syslog -> Python logger level
+        NOTSET = 0
+        DEBUG = 10
+        INFO = 20
+        WARN = 30
+        ERROR = 40
+        CRITICAL = 50
+        '''
 
-    def test_warning_message(self):
-        self.lw.logger.warning('This is a warning message.')
 
-    def test_error_message(self):
-        self.lw.logger.error('This is an error message.')
+        args = (
+            'my_logger',
+            'logger_config.json',
+            'C:/tmp/log.log',
+            'localhost',
+        )
 
-    def test_critical_message(self):
-        self.lw.logger.critical('This is a critical message.')
+        kwargs = {
+            'console_log_level': 'error',
+            'file_log_level': 'Warning',
+            'syslog_log_level': 'DEBUG'
+        }
 
-    def test_exception_message(self):
-        try:
-            7 / 0
-        except ZeroDivisionError:
-            self.lw.logger.exception('This is an exception message.')
+        lw = LoggerWrapper(*args, **kwargs)
+
+        self.assertEqual(40, lw.logger.handlers[0].level) # Console handler.
+        self.assertEqual(30, lw.logger.handlers[1].level) # File handler.
+        self.assertEqual(10, lw.logger.handlers[2].level) # Syslog handler.
