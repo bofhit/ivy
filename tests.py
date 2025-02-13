@@ -35,4 +35,3 @@ class TestLoggerWrapper(unittest.TestCase):
             7 / 0
         except ZeroDivisionError:
             self.lw.logger.exception('This is an exception message.')
-

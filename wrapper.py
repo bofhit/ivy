@@ -1,7 +1,7 @@
 __doc__ = """Wrapper for Python logger.
     Will pull values from a configuration file.
-    Main logger has separate handers for console and file logging, logging levels 
-    for them can be defined separately.
+    Main logger has separate handers for console and file logging.
+    Logging levels for them can be defined separately.
     Caller will need to provide a config file path and a destination path 
     for the file output."""
 
