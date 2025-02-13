@@ -62,15 +62,15 @@ class LoggerWrapper():
         Convert a string to a logging module flag.
         """
         if string.lower() == 'debug':
-            return logging.DEBUG
+            return logging.DEBUG            # 10
         elif string.lower() == 'info':
-            return logging.INFO
+            return logging.INFO             # 20
         elif string.lower() == 'warning':
-            return logging.WARNING
+            return logging.WARNING          # 30
         elif string.lower() == 'error':
-            return logging.ERROR
+            return logging.ERROR            # 40
         elif string.lower() == 'critical':
-            return logging.CRITICAL
+            return logging.CRITICAL         # 50
 
     def format_name(self, name):
         """
