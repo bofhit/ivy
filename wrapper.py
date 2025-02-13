@@ -2,7 +2,7 @@ __doc__ = """Wrapper for Python logger.
     Will pull values from a configuration file.
     Main logger has separate handers for console and file logging.
     Logging levels for them can be defined separately.
-    Caller will need to provide a config file path and a destination path 
+    Caller will need to provide a config file path and a destination path
     for the file output."""
 
 import json
@@ -14,33 +14,48 @@ import graypy
 LOG_LEVELS = ('debug', 'info', 'warning', 'error', 'critical')
 
 class LoggerWrapper():
-    def __init__(self, name, config, log_file, file_log_level='info', console_log_level='debug'):
+    def __init__(self,
+        name:str,
+        config:str,
+        log_file:str,
+        syslog_host:str,
+        file_log_level:str='info',
+        console_log_level:str='debug',
+        syslog_log_level:str='info'
+    ):
         """
         Attrs:
-            name(str):: Logger name, will appear in log files.
-            config(str):: Filepath for logger config.
-            log_file(str):: Filepath where the logger file handler will write files.
-            file_log_level(str):: Logging level for file output.
-            console_log_level(str):: Logging level for console output.
+            name: Logger name, will appear in log files.
+            config: Filepath for logger config.
+            log_file: Filepath where the logger file handler will write files.
+            file_log_level: Logging level for file output.
+            console_log_level: Logging level for console output.
+            syslog_log_level: Logging level for console output.
         """
-        assert file_log_level.lower() in LOG_LEVELS, f'{file_log_level} is not a valid logging level.'
-        assert console_log_level.lower() in LOG_LEVELS, f'{file_log_level} is not a valid logging level.'
+        assert type(name) == str, 'Argument "name" must be a string.'
+        assert type(config) == str, 'Argument "config" must be a string.'
+        assert type(log_file) == str, 'Argument "log_file" must be a string.'
+        assert type(syslog_host) == str, 'Argument "syslog_host" must be a string.'
 
-        file_log_level = self.recast_log_level(file_log_level)
+        assert console_log_level.lower() in LOG_LEVELS, f'{console_log_level} is not a valid logging level.'
+        assert file_log_level.lower() in LOG_LEVELS, f'{file_log_level} is not a valid logging level.'
+        assert syslog_log_level.lower() in LOG_LEVELS, f'{syslog_log_level} is not a valid logging level.'
+
         console_log_level= self.recast_log_level(console_log_level)
+        file_log_level = self.recast_log_level(file_log_level)
+        syslog_log_level= self.recast_log_level(syslog_log_level)
 
         with open(config) as f:
             json_obj = json.load(f)
-
-        # Modify the filename for the file handler before creating the Logger instance.
-        json_obj['handlers']['file_handler']['filename'] = log_file
 
         logging.config.dictConfig(json_obj)
 
         self.logger = logging.getLogger('main')
         self.logger.name = self.format_name(name)
-        self.logger.level = logging.DEBUG       # Level for logger object.
-        self.logger.handlers[1].filename = log_file
+        self.logger.handlers[0].level = console_log_level
+        self.logger.handlers[1].level = file_log_level
+        self.logger.handlers[2].level = syslog_log_level
+
 
     def recast_log_level(self, string):
         """
@@ -67,8 +82,9 @@ if __name__ == '__main__':
     import sys
 
     lw = LoggerWrapper('myLogger',
-                        'logging_config.json',
-                        'C:/io/io3.log'
+                        'logger_config.json',
+                        'C:/tmp/log.log',
+                        'localhost'
                         )
 
-
+    print(lw.logger.handlers)
