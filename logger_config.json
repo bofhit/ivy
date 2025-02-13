@@ -23,7 +23,7 @@
 			"class": "logging.handlers.RotatingFileHandler",
 			"formatter": "file_formatter",
 			"level": "INFO",
-			"filename": "C:/io/io.log",
+			"filename": "log.log",
 			"mode": "a",
 			"maxBytes": 1024
 		},
