@@ -69,3 +69,22 @@ class TestLoggerWrapper(unittest.TestCase):
         self.assertEqual(40, lw.logger.handlers[0].level) # Console handler.
         self.assertEqual(30, lw.logger.handlers[1].level) # File handler.
         self.assertEqual(10, lw.logger.handlers[2].level) # Syslog handler.
+
+    def test_syslog_host_assignment(self):
+
+        args = (
+            'my_logger',
+            'logger_config.json',
+            'C:/tmp/log.log',
+            'test-host.com',
+        )
+
+        kwargs = {
+            'console_log_level': 'error',
+            'file_log_level': 'Warning',
+            'syslog_log_level': 'DEBUG'
+        }
+
+        lw = LoggerWrapper(*args, **kwargs)
+
+        self.assertEqual(args[3], lw.logger.handlers[2].host) # Syslog handler.
