@@ -48,13 +48,16 @@ class LoggerWrapper():
         with open(config) as f:
             json_obj = json.load(f)
 
+        json_obj['name'] = self.format_name(name)
+        json_obj['handlers']['file_handler']['filename'] = log_file
+        json_obj['handlers']['file_handler']['level'] = file_log_level
+        json_obj['handlers']['console_handler']['level'] = console_log_level
+        json_obj['handlers']['gelf_handler']['host'] = syslog_host
+        json_obj['handlers']['gelf_handler']['level'] = syslog_log_level
+
         logging.config.dictConfig(json_obj)
 
         self.logger = logging.getLogger('main')
-        self.logger.name = self.format_name(name)
-        self.logger.handlers[0].level = console_log_level
-        self.logger.handlers[1].level = file_log_level
-        self.logger.handlers[2].level = syslog_log_level
 
 
     def recast_log_level(self, string):
