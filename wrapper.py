@@ -48,7 +48,6 @@ class LoggerWrapper():
         with open(config) as f:
             json_obj = json.load(f)
 
-        json_obj['name'] = self.format_name(name)
         json_obj['handlers']['file_handler']['filename'] = log_file
         json_obj['handlers']['file_handler']['level'] = file_log_level
         json_obj['handlers']['console_handler']['level'] = console_log_level
@@ -58,6 +57,9 @@ class LoggerWrapper():
         logging.config.dictConfig(json_obj)
 
         self.logger = logging.getLogger('main')
+
+        # Assign name after initialization.
+        self.logger.name = self.format_name(name)
 
 
     def recast_log_level(self, string):
