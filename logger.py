@@ -87,9 +87,10 @@ if __name__ == '__main__':
     import sys
 
     lw = LoggerWrapper('myLogger',
-                        'logger_config.json',
-                        'C:/tmp/log.log',
-                        'localhost'
-                        )
+        'logger_config.json',
+        'C:/tmp/log.log',
+        'localhost',
+        file_log_level = 'WARNING'
+        )
 
     print(lw.logger.handlers)
