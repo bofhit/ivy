@@ -1,0 +1,50 @@
+{
+    "version": 1,
+    "root": {
+		"level": "DEBUG"
+    },
+    "loggers": {
+		"main": {
+			"handlers": [
+                "console_handler",
+                "file_handler",
+                "gelf_handler"
+            ]
+		}
+    },
+    "handlers": {
+		"console_handler": {
+			"class": "logging.StreamHandler",
+			"formatter": "console_formatter",
+			"level": "DEBUG",
+			"stream": "ext://sys.stdout"
+		},
+		"file_handler": {
+			"class": "logging.FileHandler",
+			"formatter": "file_formatter",
+			"level": "INFO",
+			"filename": "C:/tmp/io.log",
+			"mode": "w"
+		},
+        "gelf_handler": {
+            "class": "graypy.GELFUDPHandler",
+            "formatter": "gelf_formatter",
+            "level": "INFO",
+            "host": "192.168.28.21",
+            "port": 12201
+        }
+    },
+    "formatters": {
+        "console_formatter": {
+            "format": "%(asctime)s [%(levelname)s] \t%(name)s\t\t%(message)s",
+			"datefmt": "%H:%M:%S"
+        },
+        "file_formatter": {
+            "format": "%(asctime)s [%(levelname)s] %(name)s %(message)s",
+			"datefmt": "%Y-%m-%dT%H:%M:%S"
+        },
+        "gelf_formatter": {
+            "format": "[%(levelname)s] \t%(name)s\t\t%(message)s"
+        }
+    }
+}
